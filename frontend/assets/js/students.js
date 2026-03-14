@@ -63,20 +63,65 @@ function closeModal() { document.getElementById('studentModal').classList.remove
 
 document.getElementById('studentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const payload = { fullName: document.getElementById('fullName').value, email: document.getElementById('email').value, rollNumber: document.getElementById('rollNumber').value, department: document.getElementById('department').value, registrationYear: parseInt(document.getElementById('registrationYear').value) || null, phoneNumber: document.getElementById('phoneNumber').value };
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const rollNumber = document.getElementById('rollNumber').value.trim();
+    const department = document.getElementById('department').value;
+    const registrationYear = document.getElementById('registrationYear').value;
+
+    // Validation
+    if (!fullName || !email || !rollNumber || !department) {
+        API.showToast('Please fill in all required fields.', 'error');
+        return;
+    }
+
+    if (!email.includes('@')) {
+        API.showToast('Please enter a valid email address.', 'error');
+        return;
+    }
+
+    const payload = { 
+        fullName, 
+        email, 
+        rollNumber, 
+        department, 
+        registrationYear: parseInt(registrationYear) || null, 
+        phoneNumber: document.getElementById('phoneNumber').value.trim() 
+    };
+
     try {
-        if (editingId) await API.request('/students/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
-        else await API.request('/students', { method: 'POST', body: JSON.stringify(payload) });
+        const btn = document.getElementById('saveStudentBtn');
+        btn.disabled = true;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+        if (editingId) {
+            await API.request('/students/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
+            API.showToast('Student profile updated!', 'success');
+        } else {
+            await API.request('/students', { method: 'POST', body: JSON.stringify(payload) });
+            API.showToast('Student added successfully!', 'success');
+        }
         closeModal();
         loadStudents();
-    } catch (err) { alert(err.data?.message || 'Failed to save student.'); }
+    } catch (err) {
+        // Error toast is handled by API.request
+    } finally {
+        const btn = document.getElementById('saveStudentBtn');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Student';
+    }
 });
 
 async function editStudent(id) { openModal(id); }
 async function deleteStudent(id) {
     if (!confirm('Delete this student? This cannot be undone.')) return;
-    try { await API.request('/students/' + id, { method: 'DELETE' }); loadStudents(); }
-    catch (e) { alert('Failed to delete.'); }
+    try { 
+        await API.request('/students/' + id, { method: 'DELETE' }); 
+        API.showToast('Student deleted successfully!', 'success');
+        loadStudents(); 
+    }
+    catch (e) {}
 }
 
 loadStudents();

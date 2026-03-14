@@ -5,43 +5,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* === CORE COLORS === */
-    --cyan: #00f3ff;
-    --purple: #bc13fe;
-    --pink: #ff0055;
-    --bg: #020306;
-    --bg2: #060d1a;
-    --bg3: #0a1628;
-    --surface: rgba(6, 13, 26, 0.85);
-    --surface2: rgba(10, 22, 40, 0.6);
-    --border: rgba(0, 243, 255, 0.15);
-    --border2: rgba(0, 243, 255, 0.3);
+    /* === PREMIUM CORE COLORS === */
+    --cyan: #00d2ff;
+    --purple: #9d50bb;
+    --pink: #ff007a;
+    --bg: #0b0e14;
+    --bg2: #121620;
+    --bg3: #1a1f2c;
+    --surface: rgba(18, 22, 32, 0.82);
+    --surface2: rgba(26, 31, 44, 0.65);
+    --border: rgba(0, 210, 255, 0.12);
+    --border2: rgba(0, 210, 255, 0.25);
 
     /* === TEXT === */
-    --text: #ffffff;
-    --text2: #8892b0;
-    --text3: #4a5568;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
 
     /* === GRADIENTS === */
-    --grad-cyber: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
-    --grad-btn: linear-gradient(90deg, var(--cyan), var(--purple));
-    --grad-bg: linear-gradient(135deg, #020306 0%, #060d1a 50%, #020306 100%);
+    --grad-cyber: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+    --grad-btn: linear-gradient(108deg, var(--cyan), var(--purple));
+    --grad-bg: radial-gradient(circle at top left, #1a1c2c, var(--bg));
 
     /* === GLOWS === */
-    --glow-cyan: 0 0 20px rgba(0, 243, 255, 0.3);
-    --glow-purple: 0 0 20px rgba(188, 19, 254, 0.3);
-    --glow-pink: 0 0 20px rgba(255, 0, 85, 0.3);
-    --glow-panel: 0 0 40px rgba(0, 243, 255, 0.05);
+    --glow-cyan: 0 0 20px rgba(0, 210, 255, 0.25);
+    --glow-purple: 0 0 20px rgba(157, 80, 187, 0.25);
+    --glow-panel: 0 10px 40px rgba(0, 0, 0, 0.4);
 
     /* === FONTS === */
-    --font-head: 'Orbitron', sans-serif;
+    --font-head: 'Outfit', 'Orbitron', sans-serif;
     --font-body: 'Inter', sans-serif;
 
     /* === EFFECTS === */
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --blur: blur(10px);
-    --radius: 4px;
-    --radius-lg: 8px;
+    --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    --blur: blur(16px);
+    --radius: 6px;
+    --radius-lg: 12px;
 }
 
 /* === RESET === */
@@ -77,6 +76,12 @@ body {
     -webkit-backdrop-filter: var(--blur);
     border: 1px solid var(--border);
     box-shadow: var(--glow-panel);
+    transition: var(--transition);
+}
+
+.glass:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
 }
 
 /* === TYPOGRAPHY === */
@@ -85,7 +90,8 @@ h2,
 h3,
 h4 {
     font-family: var(--font-head);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 a {
@@ -96,6 +102,7 @@ a {
 
 a:hover {
     color: #fff;
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
 }
 
 /* === CYBER GRADIENT TEXT === */

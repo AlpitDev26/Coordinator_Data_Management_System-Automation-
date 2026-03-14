@@ -1,4 +1,4 @@
-package com.ticClub.TicClubDataSystem.entity;
+package com.ticclub.TicClubDataSystem.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

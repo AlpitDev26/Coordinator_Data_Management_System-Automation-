@@ -4,8 +4,10 @@ if (!localStorage.getItem('jwt_token')) window.location.href = 'index.html';
 // Set user info in sidebar
 const username = localStorage.getItem('username') || 'Admin';
 const el = document.getElementById('sidebarUsername');
+const welcomeEl = document.getElementById('welcomeName');
 const av = document.getElementById('avatarInitial');
 if (el) el.textContent = username;
+if (welcomeEl) welcomeEl.textContent = username;
 if (av) av.textContent = username.charAt(0).toUpperCase();
 
 document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; });
@@ -31,7 +33,7 @@ async function loadDashboard() {
         document.getElementById('statTeams').textContent = t.length || '0';
         document.getElementById('statAttendance').textContent = a.length || '0';
 
-        // Recent students table
+        // Recent students table - mapping registrationYear correctly
         renderRecentStudents(s.slice(0, 5));
 
         // Upcoming events
@@ -73,8 +75,8 @@ function renderUpcomingEvents(events) {
 
 function renderAttendanceChart(events, attendance) {
     const ctx = document.getElementById('attendanceChart').getContext('2d');
-    const labels = events.map(e => e.title?.substring(0, 16) + '...' || 'Event');
-    const data = events.map(e => attendance.filter(a => a.eventId === e.id && a.status === 'PRESENT').length);
+    const labels = events.length ? events.map(e => (e.title?.length > 16 ? e.title.substring(0, 16) + '...' : e.title) || 'Event') : ['No Events'];
+    const data = events.map(e => attendance.filter(a => a.eventId === e.id && (a.status === 'PRESENT' || a.status === 'LATE')).length);
 
     new Chart(ctx, {
         type: 'bar',
@@ -82,9 +84,9 @@ function renderAttendanceChart(events, attendance) {
             labels,
             datasets: [{
                 label: 'Present',
-                data: data.length ? data : [12, 19, 8, 15, 22, 10, 17],
-                backgroundColor: 'rgba(0, 243, 255, 0.2)',
-                borderColor: '#00f3ff',
+                data: data.length ? data : [0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(0, 210, 255, 0.2)',
+                borderColor: '#00d2ff',
                 borderWidth: 2,
                 borderRadius: 4,
             }]
@@ -93,8 +95,8 @@ function renderAttendanceChart(events, attendance) {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                x: { ticks: { color: '#8892b0', font: { size: 10 } }, grid: { color: 'rgba(0,243,255,0.05)' } },
-                y: { ticks: { color: '#8892b0', font: { size: 10 } }, grid: { color: 'rgba(0,243,255,0.05)' }, beginAtZero: true }
+                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true }
             }
         }
     });

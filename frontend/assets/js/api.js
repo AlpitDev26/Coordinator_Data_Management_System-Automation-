@@ -29,7 +29,22 @@ const API = {
             return data;
         } catch (err) {
             console.error(`[API] Error on ${endpoint}:`, err);
+            const msg = err.data?.message || err.data || 'Connection Error';
+            this.showToast(msg, 'error');
             throw err;
         }
+    },
+
+    showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle');
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 };

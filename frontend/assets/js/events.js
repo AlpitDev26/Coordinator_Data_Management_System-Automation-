@@ -27,9 +27,9 @@ function renderTable(events) {
         return `<tr>
             <td class="text-muted">${i + 1}</td>
             <td><strong>${ev.title || '—'}</strong><br><small class="text-muted">${ev.description?.substring(0, 50) || ''}</small></td>
-            <td class="text-muted">${d ? d.toLocaleDateString() : '—'}</td>
-            <td>${ev.location || '—'}</td>
-            <td class="text-muted">${ev.createdBy || '—'}</td>
+            <td><i class="fa-regular fa-calendar-days text-cyan"></i> ${d ? d.toLocaleDateString() : '—'}</td>
+            <td class="text-muted">${ev.location || '—'}</td>
+            <td class="text-pink"><i class="fa-solid fa-user-shield"></i> ${ev.createdBy || 'System'}</td>
             <td><span class="badge ${badgeClass}">${status}</span></td>
             <td style="display:flex;gap:6px;">
                 <button class="btn btn-outline" style="padding:5px 10px;font-size:11px;" onclick="editEvent(${ev.id})"><i class="fa-solid fa-pen"></i></button>
@@ -53,20 +53,45 @@ function closeModal() { document.getElementById('eventModal').classList.remove('
 
 document.getElementById('eventForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const payload = { title: document.getElementById('title').value, description: document.getElementById('description').value, eventDate: document.getElementById('eventDate').value, location: document.getElementById('location').value };
+    const title = document.getElementById('title').value.trim();
+    const eventDate = document.getElementById('eventDate').value;
+    const description = document.getElementById('description').value.trim();
+    const location = document.getElementById('location').value.trim();
+
+    if (!title || !eventDate) {
+        API.showToast('Title and Date are required.', 'error');
+        return;
+    }
+
+    const payload = { title, description, eventDate, location };
     try {
-        if (editingId) await API.request('/events/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
-        else await API.request('/events', { method: 'POST', body: JSON.stringify(payload) });
+        const btn = e.submitter;
+        if (btn) btn.disabled = true;
+
+        if (editingId) {
+            await API.request('/events/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
+            API.showToast('Event updated successfully!', 'success');
+        } else {
+            await API.request('/events', { method: 'POST', body: JSON.stringify(payload) });
+            API.showToast('Event scheduled successfully!', 'success');
+        }
         closeModal();
         loadEvents();
-    } catch (err) { alert(err.data?.message || 'Failed to save event.'); }
+    } catch (err) {
+    } finally {
+        if (e.submitter) e.submitter.disabled = false;
+    }
 });
 
 function editEvent(id) { openModal(id); }
 async function deleteEvent(id) {
     if (!confirm('Delete this event?')) return;
-    try { await API.request('/events/' + id, { method: 'DELETE' }); loadEvents(); }
-    catch (e) { alert('Failed to delete.'); }
+    try { 
+        await API.request('/events/' + id, { method: 'DELETE' }); 
+        API.showToast('Event deleted successfully!', 'success');
+        loadEvents(); 
+    }
+    catch (e) {}
 }
 
 document.getElementById('searchInput').addEventListener('input', () => {

@@ -3,10 +3,10 @@ if (!localStorage.getItem('jwt_token')) window.location.href = 'index.html';
 document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; });
 
 const CHART_OPTS = {
-    grid: 'rgba(0,243,255,0.05)',
-    tick: '#8892b0',
+    grid: 'rgba(255,255,255,0.03)',
+    tick: '#94a3b8',
 };
-const PALETTE = ['#00f3ff', '#bc13fe', '#ff0055', '#00ff88', '#ffaa00'];
+const PALETTE = ['#00d2ff', '#9d50bb', '#ff007a', '#00ff88', '#ffaa00'];
 
 async function loadReports() {
     try {
@@ -34,11 +34,22 @@ async function loadReports() {
         });
 
         // Attendance by event
-        const evLabels = e.slice(0, 6).map(ev => ev.title?.substring(0, 12) + '..');
-        const evData = e.slice(0, 6).map(ev => a.filter(at => at.eventId === ev.id && at.status === 'PRESENT').length);
+        const evLabels = e.slice(0, 6).map(ev => (ev.title?.length > 10 ? ev.title.substring(0, 10) + '..' : ev.title) || 'Event');
+        const evData = e.slice(0, 6).map(ev => a.filter(at => at.eventId === ev.id && (at.status === 'PRESENT' || at.status === 'LATE')).length);
+        
         new Chart(document.getElementById('eventAttChart').getContext('2d'), {
             type: 'bar',
-            data: { labels: evLabels.length ? evLabels : ['Evt 1', 'Evt 2', 'Evt 3', 'Evt 4', 'Evt 5'], datasets: [{ label: 'Present', data: evData.length ? evData : [12, 18, 9, 21, 14], backgroundColor: 'rgba(188,19,254,0.3)', borderColor: '#bc13fe', borderWidth: 2, borderRadius: 4 }] },
+            data: { 
+                labels: evLabels.length ? evLabels : ['No Events'], 
+                datasets: [{ 
+                    label: 'Present', 
+                    data: evData.length ? evData : [0], 
+                    backgroundColor: 'rgba(188,19,254,0.3)', 
+                    borderColor: '#bc13fe', 
+                    borderWidth: 2, 
+                    borderRadius: 4 
+                }] 
+            },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: CHART_OPTS.tick, font: { size: 10 } }, grid: { color: CHART_OPTS.grid } }, y: { ticks: { color: CHART_OPTS.tick, font: { size: 10 } }, grid: { color: CHART_OPTS.grid }, beginAtZero: true } } }
         });
 
