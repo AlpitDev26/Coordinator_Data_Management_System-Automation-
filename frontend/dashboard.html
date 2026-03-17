@@ -1,5 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — TIC Club System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo">
+                <div class="brand-icon"><i class="fa-solid fa-database"></i></div>
+                <div>
+                    <div class="brand-name">TIC CLUB</div>
+                    <div class="brand-sub">DATA MANAGEMENT SYSTEM</div>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <div class="nav-section">
+                <div class="nav-label">Core</div>
+                <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="students.html"  class="nav-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+                <a href="teams.html"     class="nav-item"><i class="fa-solid fa-users"></i> Teams</a>
+                <a href="events.html"    class="nav-item"><i class="fa-solid fa-calendar-days"></i> Events</a>
+                <a href="attendance.html"class="nav-item"><i class="fa-solid fa-clipboard-check"></i> Attendance</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-label">Analytics</div>
+                <a href="reports.html"   class="nav-item"><i class="fa-solid fa-chart-bar"></i> Reports</a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-mini">
+                <div class="user-avatar" id="avatarInitial">A</div>
+                <div class="user-info">
+                    <div class="name" id="sidebarUsername">Admin</div>
+                    <div class="role" id="sidebarRole">ROLE_ADMIN</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <div class="page-title">DASHBOARD</div>
+                <div class="text-muted" style="font-size: 11px; margin-top: 4px;">Welcome back, <span id="welcomeName" class="text-cyan">Admin</span>! 👋</div>
+            </div>
+            <div class="topbar-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Quick search...">
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-icon" title="Notifications"><i class="fa-regular fa-bell"></i></div>
+                <div class="topbar-icon" title="Settings"><i class="fa-solid fa-gear"></i></div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <!-- STAT CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon cyan"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div class="stat-info"><h3 id="statStudents">—</h3><p>Total Students</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="stat-info"><h3 id="statEvents">—</h3><p>Total Events</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pink"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info"><h3 id="statTeams">—</h3><p>Active Teams</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="stat-info"><h3 id="statAttendance">—</h3><p>Attendance Records</p></div>
+                </div>
+            </div>
+
+            <!-- CHARTS + EVENTS -->
+            <div class="content-grid">
+                <div class="card">
+                    <div class="section-header">
+                        <span class="section-title">Attendance Trend</span>
+                        <span class="badge badge-cyan">Last 7 Events</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-header">
+                        <span class="section-title">Upcoming Events</span>
+                    </div>
+                    <div class="event-list" id="upcomingEvents">
+                        <div class="empty-state" style="padding:20px;">
+                            <i class="fa-regular fa-calendar" style="font-size:28px;margin-bottom:8px;"></i>
+                            <p>No events found</p>
 
 <head>
     <meta charset="UTF-8">
@@ -226,6 +334,39 @@
                     </div>
                 </div>
             </div>
+
+            <!-- RECENT STUDENTS TABLE -->
+            <div class="card">
+                <div class="section-header">
+                    <span class="section-title">Recently Added Students</span>
+                    <a href="students.html" class="btn btn-outline" style="padding:8px 16px;font-size:11px;">View All</a>
+                </div>
+                <div class="table-card" style="border:none;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Batch</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentStudentsBody">
+                            <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:30px;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="./assets/js/api.js"></script>
+<script src="./assets/js/dashboard.js"></script>
+</body>
+</html>
         </main>
     </div>
 

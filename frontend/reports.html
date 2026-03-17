@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports — TIC Club System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="brand-logo"><div class="brand-icon"><i class="fa-solid fa-database"></i></div><div><div class="brand-name">TIC CLUB</div><div class="brand-sub">DATA MANAGEMENT SYSTEM</div></div></div></div>
+        <nav>
+            <div class="nav-section">
+                <div class="nav-label">Core</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="students.html"  class="nav-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+                <a href="teams.html"     class="nav-item"><i class="fa-solid fa-users"></i> Teams</a>
+                <a href="events.html"    class="nav-item"><i class="fa-solid fa-calendar-days"></i> Events</a>
+                <a href="attendance.html"class="nav-item"><i class="fa-solid fa-clipboard-check"></i> Attendance</a>
+            </div>
+            <div class="nav-section"><div class="nav-label">Analytics</div><a href="reports.html" class="nav-item active"><i class="fa-solid fa-chart-bar"></i> Reports</a></div>
+        </nav>
+        <div class="sidebar-footer"><div class="user-mini"><div class="user-avatar">A</div><div class="user-info"><div class="name">Admin</div><div class="role">ROLE_ADMIN</div></div><button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i></button></div></div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <span class="page-title">REPORTS & ANALYTICS</span>
+            <div class="topbar-actions" style="margin-left:auto;"></div>
+        </header>
+
+        <div class="page-content">
+            <div class="reports-grid">
+                <div class="card">
+                    <div class="section-header"><span class="section-title">Students by Department</span></div>
+                    <div class="chart-container"><canvas id="deptChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="section-header"><span class="section-title">Event Attendance Rate</span></div>
+                    <div class="chart-container"><canvas id="eventAttChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="section-header"><span class="section-title">Monthly Events Trend</span></div>
+                    <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="section-header"><span class="section-title">System Overview</span></div>
+                    <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);">
+                            <span class="text-muted" style="font-size:13px;"><i class="fa-solid fa-user-graduate text-cyan" style="margin-right:8px;"></i>Total Students</span>
+                            <span id="rptStudents" class="text-cyan" style="font-family:var(--font-head);font-size:18px;">—</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);">
+                            <span class="text-muted" style="font-size:13px;"><i class="fa-solid fa-calendar-days text-purple" style="margin-right:8px;"></i>Total Events</span>
+                            <span id="rptEvents" style="color:var(--purple);font-family:var(--font-head);font-size:18px;">—</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);">
+                            <span class="text-muted" style="font-size:13px;"><i class="fa-solid fa-users text-pink" style="margin-right:8px;"></i>Total Teams</span>
+                            <span id="rptTeams" style="color:var(--pink);font-family:var(--font-head);font-size:18px;">—</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);">
+                            <span class="text-muted" style="font-size:13px;"><i class="fa-solid fa-clipboard-check" style="color:#00ff88;margin-right:8px;"></i>Attendance Records</span>
+                            <span id="rptAtt" style="color:#00ff88;font-family:var(--font-head);font-size:18px;">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="./assets/js/api.js"></script>
+<script src="./assets/js/charts.js"></script>
+</body>
+</html>

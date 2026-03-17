@@ -1,111 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | TIC Club Admin Panel</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .brand-logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .brand-logo h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #f8fafc, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .brand-logo p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        #login-form button {
-            width: 100%;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: var(--radius);
-            margin-bottom: 1.5rem;
-            font-size: 0.85rem;
-            display: none;
-        }
-
-        .alert-error {
-            background: rgba(244, 63, 94, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            display: none;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+    <title>Login — TIC Club Data Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
 </head>
+<body class="auth-page">
+    <!-- Ambient Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-<body>
-    <div class="login-container glass-card">
-        <div class="brand-logo">
-            <h1>TIC Club</h1>
-            <p>Coordinator Data Management System</p>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="logo-box"><i class="fa-solid fa-database"></i></div>
+                <h1>TIC Club</h1>
+                <p>COORDINATOR SYSTEM // ACCESS PORTAL</p>
+            </div>
+
+            <div class="alert error" id="alertBox">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="alertMsg">Invalid credentials.</span>
+            </div>
+
+            <form class="auth-form" id="loginForm" novalidate>
+                <div class="input-group">
+                    <label>Username</label>
+                    <div class="input-icon-wrap">
+                        <input class="input-field" type="text" id="username" placeholder="Enter your username" autocomplete="username" required>
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="pass-wrap input-icon-wrap">
+                        <input class="input-field" type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button" class="toggle-pass" id="togglePass">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-extras">
+                    <a href="forgot-password.html" class="form-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-btn" id="loginBtn">
+                    <i class="fa-solid fa-right-to-bracket" id="btnIcon"></i>
+                    <span id="btnText">INITIALIZE ACCESS</span>
+                    <div class="spinner" id="loginSpinner"></div>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p><i class="fa-solid fa-shield-halved" style="color:var(--cyan);margin-right:6px;"></i>SECURED BY JWT ENCRYPTION // SPRING BOOT</p>
+            </div>
         </div>
-
-        <div id="alert" class="alert alert-error"></div>
-
-        <form id="login-form">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" value="Admin" required autocomplete="username">
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" value="Adm1n*00" required autocomplete="current-password">
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <span id="btn-text">Sign In</span>
-                <div id="spinner" class="spinner"></div>
-            </button>
-        </form>
     </div>
 
-    <script src="js/auth.js"></script>
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/auth.js"></script>
 </body>
-
 </html>
