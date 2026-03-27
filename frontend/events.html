@@ -57,14 +57,15 @@
                             <th>#</th>
                             <th>Event Title</th>
                             <th>Date</th>
-                            <th>Location</th>
-                            <th>Created By</th>
+                            <th>Mode</th>
+                            <th>Host By</th>
+                            <th>Host Dept</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="eventsBody">
-                        <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:40px;">Loading events...</td></tr>
+                        <tr><td colspan="8" style="text-align:center;color:var(--text3);padding:40px;">Loading events...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -94,8 +95,28 @@
                     <input class="input-field" type="datetime-local" id="eventDate" required>
                 </div>
                 <div class="input-group">
-                    <label>Location</label>
-                    <input class="input-field" type="text" id="location" placeholder="e.g. Lab 301 / Online">
+                    <label>Mode</label>
+                    <select class="input-field" id="mode" required>
+                        <option value="Offline">Offline</option>
+                        <option value="Online">Online</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Host By</label>
+                    <input class="input-field" type="text" id="hostedBy" placeholder="e.g. Alpit">
+                </div>
+                <div class="input-group">
+                    <label>Host Dept</label>
+                    <select class="input-field" id="hostDept" required>
+                        <option value="">Select Dept...</option>
+                        <option>Technical</option>
+                        <option>Administration</option>
+                        <option>Event Management</option>
+                        <option>Social Media</option>
+                        <option>Research & Development</option>
+                        <option>Documentation</option>
+                    </select>
                 </div>
             </div>
             <div class="form-actions">

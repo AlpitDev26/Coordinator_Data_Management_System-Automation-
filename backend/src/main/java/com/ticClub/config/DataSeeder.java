@@ -68,9 +68,9 @@ public class DataSeeder implements CommandLineRunner {
 
             // Seed Events
             if (eventRepository.count() == 0) {
-                com.ticclub.core.model.Event e1 = com.ticclub.core.model.Event.builder().title("Tech Workshop").description("AI/ML Fundamentals").location("Seminar Hall").eventDate(java.time.LocalDateTime.now().plusDays(2)).build();
-                com.ticclub.core.model.Event e2 = com.ticclub.core.model.Event.builder().title("Orientation 2026").description("Introduction to TIC Club").location("Auditorium").eventDate(java.time.LocalDateTime.now().minusDays(5)).build();
-                com.ticclub.core.model.Event e3 = com.ticclub.core.model.Event.builder().title("Code Sprint").description("48-hour Hackathon").location("Lab 103").eventDate(java.time.LocalDateTime.now().plusWeeks(1)).build();
+                com.ticclub.core.model.Event e1 = com.ticclub.core.model.Event.builder().title("Tech Workshop").description("AI/ML Fundamentals").mode("Offline").hostDept("Technical").hostedBy("Alpit").eventDate(java.time.LocalDateTime.now().plusDays(2)).build();
+                com.ticclub.core.model.Event e2 = com.ticclub.core.model.Event.builder().title("Orientation 2026").description("Introduction to TIC Club").mode("Offline").hostDept("Administration").hostedBy("Meera").eventDate(java.time.LocalDateTime.now().minusDays(5)).build();
+                com.ticclub.core.model.Event e3 = com.ticclub.core.model.Event.builder().title("Code Sprint").description("48-hour Hackathon").mode("Offline").hostDept("Technical").hostedBy("Rohan").eventDate(java.time.LocalDateTime.now().plusWeeks(1)).build();
                 
                 eventRepository.saveAll(java.util.List.of(e1, e2, e3));
                 log.info("✅ Sample events created");

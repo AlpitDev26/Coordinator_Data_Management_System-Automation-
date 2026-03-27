@@ -1,6 +1,7 @@
 package com.ticclub.core.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +31,21 @@ public class Event {
     private String description;
 
     @Column(nullable = false)
+    @JsonProperty("eventDate")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime eventDate;
 
-    private String location;
+    @JsonProperty("mode")
+    private String mode;
 
-    private String createdBy;
+    @JsonProperty("hostedBy")
+    private String hostedBy;
+
+    @JsonProperty("hostDept")
+    private String hostDept;
 
     @Column(nullable = false, updatable = false)
+    @JsonProperty("createdAt")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 

@@ -29,7 +29,7 @@ public class EventService {
 
     public Event createEvent(Event event) {
         String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        event.setCreatedBy(currentUser);
+        if (event.getHostedBy() == null) event.setHostedBy(currentUser);
         return eventRepository.save(event);
     }
 
@@ -38,7 +38,9 @@ public class EventService {
         event.setTitle(eventDetails.getTitle());
         event.setDescription(eventDetails.getDescription());
         event.setEventDate(eventDetails.getEventDate());
-        event.setLocation(eventDetails.getLocation());
+        event.setMode(eventDetails.getMode());
+        event.setHostedBy(eventDetails.getHostedBy());
+        event.setHostDept(eventDetails.getHostDept());
         return eventRepository.save(event);
     }
 

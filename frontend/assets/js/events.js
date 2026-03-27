@@ -8,28 +8,41 @@ let editingId = null;
 async function loadEvents() {
     try {
         allEvents = await API.request('/events');
+        console.log('[Events] Loaded:', allEvents);
         renderTable(allEvents);
     } catch (e) {
+        console.error('[Events] Load failed:', e);
         document.getElementById('eventsBody').innerHTML =
-            '<tr><td colspan="7" style="text-align:center;color:var(--pink);padding:30px;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;"></i>Could not load events. Is the backend running?</td></tr>';
+            '<tr><td colspan="8" style="text-align:center;color:var(--pink);padding:30px;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;"></i>Could not load events. Is the backend running?</td></tr>';
     }
 }
 
 function renderTable(events) {
     document.getElementById('totalCount').textContent = events.length;
     const body = document.getElementById('eventsBody');
-    if (!events.length) { body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:30px;">No events found.</td></tr>'; return; }
+    if (!events.length) { 
+        body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:30px;">No events found.</td></tr>'; 
+        return; 
+    }
+    
     body.innerHTML = events.map((ev, i) => {
         const now = new Date();
         const d = ev.eventDate ? new Date(ev.eventDate) : null;
-        const status = !d ? 'Unknown' : d > now ? 'Upcoming' : 'Completed';
-        const badgeClass = status === 'Upcoming' ? 'badge-cyan' : 'badge-purple';
+        let status = 'Unknown';
+        let badgeClass = 'badge-muted';
+        
+        if (d && !isNaN(d.getTime())) {
+            status = d > now ? 'Upcoming' : 'Completed';
+            badgeClass = status === 'Upcoming' ? 'badge-cyan' : 'badge-purple';
+        }
+
         return `<tr>
             <td class="text-muted">${i + 1}</td>
-            <td><strong>${ev.title || '—'}</strong><br><small class="text-muted">${ev.description?.substring(0, 50) || ''}</small></td>
-            <td><i class="fa-regular fa-calendar-days text-cyan"></i> ${d ? d.toLocaleDateString() : '—'}</td>
-            <td class="text-muted">${ev.location || '—'}</td>
-            <td class="text-pink"><i class="fa-solid fa-user-shield"></i> ${ev.createdBy || 'System'}</td>
+            <td><strong>${ev.title || '—'}</strong><br><small class="text-muted">${(ev.description || '').substring(0, 50)}</small></td>
+            <td><i class="fa-regular fa-calendar-days text-cyan"></i> ${d && !isNaN(d.getTime()) ? d.toLocaleDateString() : '—'}</td>
+            <td class="text-muted">${ev.mode || ev.event_mode || '—'}</td>
+            <td class="text-pink"><i class="fa-solid fa-user-shield"></i> ${ev.hostedBy || ev.hosted_by || 'System'}</td>
+            <td class="text-muted">${ev.hostDept || ev.host_dept || '—'}</td>
             <td><span class="badge ${badgeClass}">${status}</span></td>
             <td style="display:flex;gap:6px;">
                 <button class="btn btn-outline" style="padding:5px 10px;font-size:11px;" onclick="editEvent(${ev.id})"><i class="fa-solid fa-pen"></i></button>
@@ -45,7 +58,14 @@ function openModal(id = null) {
     document.getElementById('eventForm').reset();
     if (id) {
         const ev = allEvents.find(x => x.id === id);
-        if (ev) { document.getElementById('title').value = ev.title; document.getElementById('description').value = ev.description; document.getElementById('eventDate').value = ev.eventDate?.slice(0, 16) || ''; document.getElementById('location').value = ev.location; }
+        if (ev) { 
+            document.getElementById('title').value = ev.title; 
+            document.getElementById('description').value = ev.description; 
+            document.getElementById('eventDate').value = ev.eventDate?.slice(0, 16) || ''; 
+            document.getElementById('mode').value = ev.mode || ev.event_mode || 'Offline';
+            document.getElementById('hostedBy').value = ev.hostedBy || ev.hosted_by || '';
+            document.getElementById('hostDept').value = ev.hostDept || ev.host_dept || '';
+        }
     }
     document.getElementById('eventModal').classList.add('active');
 }
@@ -56,18 +76,17 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
     const title = document.getElementById('title').value.trim();
     const eventDate = document.getElementById('eventDate').value;
     const description = document.getElementById('description').value.trim();
-    const location = document.getElementById('location').value.trim();
+    const mode = document.getElementById('mode').value;
+    const hostedBy = document.getElementById('hostedBy').value.trim();
+    const hostDept = document.getElementById('hostDept').value;
 
-    if (!title || !eventDate) {
-        API.showToast('Title and Date are required.', 'error');
+    if (!title || !eventDate || !hostDept) {
+        API.showToast('Title, Date and Host Dept are required.', 'error');
         return;
     }
 
-    const payload = { title, description, eventDate, location };
+    const payload = { title, description, eventDate, mode, hostedBy, hostDept };
     try {
-        const btn = e.submitter;
-        if (btn) btn.disabled = true;
-
         if (editingId) {
             await API.request('/events/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
             API.showToast('Event updated successfully!', 'success');
@@ -79,7 +98,6 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
         loadEvents();
     } catch (err) {
     } finally {
-        if (e.submitter) e.submitter.disabled = false;
     }
 });
 
@@ -96,7 +114,12 @@ async function deleteEvent(id) {
 
 document.getElementById('searchInput').addEventListener('input', () => {
     const q = document.getElementById('searchInput').value.toLowerCase();
-    renderTable(allEvents.filter(e => (e.title || '').toLowerCase().includes(q) || (e.location || '').toLowerCase().includes(q)));
+    renderTable(allEvents.filter(e => 
+        (e.title || '').toLowerCase().includes(q) || 
+        (e.mode || e.event_mode || '').toLowerCase().includes(q) ||
+        (e.hostedBy || e.hosted_by || '').toLowerCase().includes(q) ||
+        (e.hostDept || e.host_dept || '').toLowerCase().includes(q)
+    ));
 });
 
 loadEvents();

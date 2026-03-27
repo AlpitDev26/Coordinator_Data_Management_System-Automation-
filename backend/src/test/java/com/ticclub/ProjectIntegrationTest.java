@@ -108,7 +108,7 @@ public class ProjectIntegrationTest {
                 .title("Test Event")
                 .description("Test Description")
                 .eventDate(LocalDateTime.of(2026, 3, 15, 10, 0))
-                .location("Lab 1")
+                .mode("Offline")
                 .build();
 
         // Create

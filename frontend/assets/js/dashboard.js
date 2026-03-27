@@ -36,8 +36,9 @@ async function loadDashboard() {
         // Recent students table - mapping registrationYear correctly
         renderRecentStudents(s.slice(0, 5));
 
-        // Upcoming events
-        renderUpcomingEvents(e.slice(0, 4));
+        // Upcoming events (filter only future dates)
+        const upcoming = e.filter(ev => ev.eventDate && new Date(ev.eventDate) >= new Date());
+        renderUpcomingEvents(upcoming.slice(0, 4));
 
         // Chart
         renderAttendanceChart(e.slice(0, 7), a);
@@ -66,9 +67,12 @@ function renderUpcomingEvents(events) {
     container.innerHTML = events.map((ev, i) => `
         <div class="event-item">
             <div class="event-dot ${colors[i % colors.length]}"></div>
-            <div>
-                <div class="event-name">${ev.title}</div>
-                <div class="event-date">${ev.eventDate ? new Date(ev.eventDate).toLocaleDateString() : '—'} • ${ev.location || 'TBD'}</div>
+            <div style="flex-grow: 1;">
+                <div class="event-name">${ev.title || '—'}</div>
+                <div class="event-date">${ev.eventDate ? new Date(ev.eventDate).toLocaleDateString() : '—'} • ${ev.mode || ev.event_mode || 'TBD'}</div>
+            </div>
+            <div style="font-size: 9px; color: var(--pink); border-left: 1px solid rgba(255,255,255,0.05); padding-left: 8px;">
+                ${ev.hostDept || ev.host_dept || '—'}
             </div>
         </div>`).join('');
 }
@@ -78,25 +82,71 @@ function renderAttendanceChart(events, attendance) {
     const labels = events.length ? events.map(e => (e.title?.length > 16 ? e.title.substring(0, 16) + '...' : e.title) || 'Event') : ['No Events'];
     const data = events.map(e => attendance.filter(a => a.eventId === e.id && (a.status === 'PRESENT' || a.status === 'LATE')).length);
 
+    const presentData = events.map(e => attendance.filter(a => a.eventId === e.id && a.status === 'PRESENT').length);
+    const lateData    = events.map(e => attendance.filter(a => a.eventId === e.id && a.status === 'LATE').length);
+    const absentData  = events.map(e => attendance.filter(a => a.eventId === e.id && a.status === 'ABSENT').length);
+
+    const gPres = ctx.createLinearGradient(0, 0, 0, 400); 
+    gPres.addColorStop(0, '#10b981'); gPres.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
+
+    const gLate = ctx.createLinearGradient(0, 0, 0, 400); 
+    gLate.addColorStop(0, '#f59e0b'); gLate.addColorStop(1, 'rgba(245, 158, 11, 0.2)');
+
+    const gAbs = ctx.createLinearGradient(0, 0, 0, 400); 
+    gAbs.addColorStop(0, '#f43f5e'); gAbs.addColorStop(1, 'rgba(244, 63, 94, 0.2)');
+
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels,
-            datasets: [{
-                label: 'Present',
-                data: data.length ? data : [0, 0, 0, 0, 0, 0, 0],
-                backgroundColor: 'rgba(0, 210, 255, 0.2)',
-                borderColor: '#00d2ff',
-                borderWidth: 2,
-                borderRadius: 4,
-            }]
+            datasets: [
+                {
+                    label: 'Present',
+                    data: presentData,
+                    backgroundColor: gPres,
+                    borderColor: '#10b981',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#10b981'
+                },
+                {
+                    label: 'Late',
+                    data: lateData,
+                    backgroundColor: gLate,
+                    borderColor: '#f59e0b',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#f59e0b'
+                },
+                {
+                    label: 'Absent',
+                    data: absentData,
+                    backgroundColor: gAbs,
+                    borderColor: '#f43f5e',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#f43f5e'
+                }
+            ]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            responsive: true, 
+            maintainAspectRatio: false,
+            animation: { duration: 1500, easing: 'easeOutElastic' },
+            plugins: { 
+                legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { size: 10, family: 'Inter' }, usePointStyle: true, padding: 15 } },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleFont: { size: 12, family: 'Inter' },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    boxPadding: 4
+                }
+            },
             scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true }
+                x: { stacked: true, ticks: { color: '#64748b', font: { size: 10, family: 'Inter' } }, grid: { display: false } },
+                y: { stacked: true, ticks: { color: '#64748b', font: { size: 10, family: 'Inter' } }, grid: { color: 'rgba(255,255,255,0.02)', drawBorder: false }, beginAtZero: true }
             }
         }
     });
