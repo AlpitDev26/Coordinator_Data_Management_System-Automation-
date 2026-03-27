@@ -2,6 +2,7 @@ package com.ticclub.config;
 
 import com.ticclub.core.model.Student;
 import com.ticclub.core.model.Team;
+import com.ticclub.core.model.AttendanceStatus;
 import com.ticclub.core.model.User;
 import com.ticclub.core.model.UserRole;
 import com.ticclub.core.repository.StudentRepository;
@@ -24,6 +25,8 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final TeamRepository teamRepository;
+    private final com.ticclub.core.repository.EventRepository eventRepository;
+    private final com.ticclub.core.repository.AttendanceRepository attendanceRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -45,58 +48,53 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedStudentsAndTeams() {
-        if (studentRepository.count() == 0) {
-            Student s1 = Student.builder()
-                    .fullName("Alpit")
-                    .email("alpit@example.com")
-                    .rollNumber("TIC001")
-                    .department("Computer Science")
-                    .registrationYear(2023)
-                    .build();
+        attendanceRepository.deleteAll();
+        teamRepository.deleteAll();
+        studentRepository.deleteAll();
+        eventRepository.deleteAll();
 
-            Student s2 = Student.builder()
-                    .fullName("Rahul")
-                    .email("rahul@example.com")
-                    .rollNumber("TIC002")
-                    .department("Information Technology")
-                    .registrationYear(2023)
-                    .build();
+        if (true) { // Force seed every time for now or depend on count
+            // All combinations of Dept and Branch
+            Student s1 = Student.builder().fullName("Alpit").email("alpit@example.com").clubDept("Technical").department("Computer Engineering").departmentRole("Coordinator").build();
+            Student s2 = Student.builder().fullName("Rahul").email("rahul@example.com").clubDept("Event Management").department("Information Technology").departmentRole("Co-Coordinator").build();
+            Student s3 = Student.builder().fullName("Sneha").email("sneha@example.com").clubDept("Research & Development").department("Artificial Intelligence & Data Science").departmentRole("Lead").build();
+            Student s4 = Student.builder().fullName("Anya").email("anya@example.com").clubDept("Social Media").department("Information Technology").departmentRole("Admin").build();
+            Student s5 = Student.builder().fullName("Kabir").email("kabir@example.com").clubDept("Documentation").department("Artificial Intelligence & Data Science").departmentRole("Coordinator").build();
+            Student s6 = Student.builder().fullName("Meera").email("meera@example.com").clubDept("Administration").department("Computer Engineering").departmentRole("President").build();
+            Student s7 = Student.builder().fullName("Rohan").email("rohan@example.com").clubDept("Technical").department("Computer Science (Data Science)").departmentRole("Department Head").build();
 
-            Student s3 = Student.builder()
-                    .fullName("Sneha")
-                    .email("sneha@example.com")
-                    .rollNumber("TIC003")
-                    .department("Data Science")
-                    .registrationYear(2024)
-                    .build();
-
-            studentRepository.save(s1);
-            studentRepository.save(s2);
-            studentRepository.save(s3);
+            studentRepository.saveAll(java.util.List.of(s1, s2, s3, s4, s5, s6, s7));
             log.info("✅ Sample students created");
+
+            // Seed Events
+            if (eventRepository.count() == 0) {
+                com.ticclub.core.model.Event e1 = com.ticclub.core.model.Event.builder().title("Tech Workshop").description("AI/ML Fundamentals").location("Seminar Hall").eventDate(java.time.LocalDateTime.now().plusDays(2)).build();
+                com.ticclub.core.model.Event e2 = com.ticclub.core.model.Event.builder().title("Orientation 2026").description("Introduction to TIC Club").location("Auditorium").eventDate(java.time.LocalDateTime.now().minusDays(5)).build();
+                com.ticclub.core.model.Event e3 = com.ticclub.core.model.Event.builder().title("Code Sprint").description("48-hour Hackathon").location("Lab 103").eventDate(java.time.LocalDateTime.now().plusWeeks(1)).build();
+                
+                eventRepository.saveAll(java.util.List.of(e1, e2, e3));
+                log.info("✅ Sample events created");
+
+                // Seed Attendance for the past event (Orientation 2026)
+                if (attendanceRepository.count() == 0) {
+                    attendanceRepository.save(com.ticclub.core.model.Attendance.builder().event(e2).student(s1).status(AttendanceStatus.PRESENT).build());
+                    attendanceRepository.save(com.ticclub.core.model.Attendance.builder().event(e2).student(s2).status(AttendanceStatus.PRESENT).build());
+                    attendanceRepository.save(com.ticclub.core.model.Attendance.builder().event(e2).student(s3).status(AttendanceStatus.LATE).build());
+                    attendanceRepository.save(com.ticclub.core.model.Attendance.builder().event(e2).student(s4).status(AttendanceStatus.ABSENT).build());
+                    log.info("✅ Sample attendance created");
+                }
+            }
 
             if (teamRepository.count() == 0) {
                 Set<Student> devMembers = new HashSet<>();
-                devMembers.add(s1);
-                devMembers.add(s2);
+                devMembers.add(s1); devMembers.add(s7);
+                Team t1 = Team.builder().name("Core Tech").description("The central engineering unit.").members(devMembers).build();
 
-                Team t1 = Team.builder()
-                        .name("Web Dev Team")
-                        .description("Team specialized in web technologies.")
-                        .members(devMembers)
-                        .build();
+                Set<Student> leadership = new HashSet<>();
+                leadership.add(s6); leadership.add(s3);
+                Team t2 = Team.builder().name("Executive Council").description("Club leadership and strategy.").members(leadership).build();
 
-                Set<Student> aiMembers = new HashSet<>();
-                aiMembers.add(s3);
-
-                Team t2 = Team.builder()
-                        .name("AI Research")
-                        .description("Focused on machine learning and automation.")
-                        .members(aiMembers)
-                        .build();
-
-                teamRepository.save(t1);
-                teamRepository.save(t2);
+                teamRepository.saveAll(java.util.List.of(t1, t2));
                 log.info("✅ Sample teams created");
             }
         }

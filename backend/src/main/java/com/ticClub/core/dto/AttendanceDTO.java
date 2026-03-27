@@ -8,7 +8,7 @@ public record AttendanceDTO(
         Long eventId,
         Long studentId,
         String studentName,
-        String studentRollNumber,
+        String studentClubDept,
         String eventTitle,
         AttendanceStatus status,
         java.time.LocalDateTime recordedAt
@@ -19,7 +19,7 @@ public record AttendanceDTO(
                 attendance.getEvent().getId(),
                 attendance.getStudent().getId(),
                 attendance.getStudent().getFullName(),
-                attendance.getStudent().getRollNumber(),
+                attendance.getStudent().getClubDept(),
                 attendance.getEvent().getTitle(),
                 attendance.getStatus(),
                 attendance.getRecordedAt()

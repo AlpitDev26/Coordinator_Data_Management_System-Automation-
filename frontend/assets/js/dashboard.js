@@ -54,7 +54,7 @@ function renderRecentStudents(students) {
             <td><strong>${s.fullName || s.username || '—'}</strong></td>
             <td class="text-muted">${s.email || '—'}</td>
             <td>${s.department || '—'}</td>
-            <td>${s.registrationYear || '—'}</td>
+            <td>${s.departmentRole || '—'}</td>
             <td><span class="badge badge-cyan">Active</span></td>
         </tr>`).join('');
 }

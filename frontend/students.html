@@ -45,10 +45,12 @@
                     <div style="margin-left:auto;display:flex;gap:10px;">
                         <select class="input-field" id="deptFilter" onchange="filterStudents()" style="padding:8px 12px;width:auto;font-size:12px;">
                             <option value="">All Departments</option>
-                            <option>Artificial Intelligence & Data Science</option>
-                            <option>Computer Engineering</option>
-                            <option>Information Technology</option>
-                            <option>Computer Science (Data Science)</option>
+                            <option>Administration</option>
+                            <option>Event Management</option>
+                            <option>Technical</option>
+                            <option>Research & Development</option>
+                            <option>Social Media</option>
+                            <option>Documentation</option>
                         </select>
                     </div>
                 </div>
@@ -57,10 +59,10 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Roll Number</th>
+                            <th>Club Dept</th>
                             <th>Email</th>
                             <th>Department</th>
-                            <th>Club Dept.</th>
+                            <th>Department Role</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -91,8 +93,16 @@
                     <input class="input-field" type="email" id="email" placeholder="student@email.com" required>
                 </div>
                 <div class="input-group">
-                    <label>Roll Number</label>
-                    <input class="input-field" type="text" id="rollNumber" placeholder="e.g. CS2022001" required>
+                    <label>Club Dept</label>
+                    <select class="input-field" id="clubDept" required>
+                        <option value="">Select Club Dept...</option>
+                        <option value="Administration">Administration</option>
+                        <option value="Event Management">Event Management</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Research & Development">Research & Development</option>
+                        <option value="Social Media">Social Media</option>
+                        <option value="Documentation">Documentation</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label>Department</label>
@@ -105,12 +115,19 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Registration Year</label>
-                    <input class="input-field" type="number" id="registrationYear" placeholder="e.g. 2024" min="2000" max="2099">
+                    <label>Department Role</label>
+                    <select class="input-field" id="departmentRole" required>
+                        <option value="">Select Club Dept Role</option>
+                        <option value="President">President</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Department Head">Department Head</option>
+                        <option value="Junior Head">Junior Head</option>
+                        <option value="Coordinator">Coordinator</option>
+                    </select>
                 </div>
                 <div class="input-group full">
                     <label>Phone Number</label>
-                    <input class="input-field" type="tel" id="phoneNumber" placeholder="+91 XXXXX XXXXX">
+                    <input class="input-field" type="tel" id="phoneNumber" placeholder="10-digit number" required maxlength="10" pattern="[0-9]{10}">
                 </div>
             </div>
             <div class="form-actions">

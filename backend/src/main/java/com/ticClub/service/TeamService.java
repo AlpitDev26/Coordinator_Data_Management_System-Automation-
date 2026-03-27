@@ -37,12 +37,20 @@ public class TeamService {
             throw new IllegalArgumentException("Team with name " + request.name() + " already exists.");
         }
         
+        List<Long> busyIds = teamRepository.findAllStudentIdsInTeams();
+        for (Long id : request.memberIds()) {
+            if (busyIds.contains(id)) {
+                Student s = studentRepository.findById(id).orElse(null);
+                throw new IllegalArgumentException("Student " + (s != null ? s.getFullName() : id) + " is already in another team!");
+            }
+        }
+        
         Team team = Team.builder()
                 .name(request.name())
                 .description(request.description())
                 .members(fetchStudents(request.memberIds()))
                 .build();
-                
+                 
         return teamRepository.save(team);
     }
 
@@ -52,6 +60,14 @@ public class TeamService {
         
         if (!team.getName().equals(request.name()) && teamRepository.existsByName(request.name())) {
             throw new IllegalArgumentException("Team with name " + request.name() + " already exists.");
+        }
+
+        List<Long> busyIds = teamRepository.findStudentIdsInOtherTeams(id);
+        for (Long mid : request.memberIds()) {
+            if (busyIds.contains(mid)) {
+                Student s = studentRepository.findById(mid).orElse(null);
+                throw new IllegalArgumentException("Student " + (s != null ? s.getFullName() : mid) + " is already in another team!");
+            }
         }
         
         team.setName(request.name());

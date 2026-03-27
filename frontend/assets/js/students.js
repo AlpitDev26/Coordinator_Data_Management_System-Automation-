@@ -27,10 +27,10 @@ function renderTable(students) {
         <tr>
             <td class="text-muted" style="font-size:12px;">${i + 1}</td>
             <td><strong>${s.fullName || '—'}</strong></td>
-            <td><span class="badge badge-cyan">${s.rollNumber || '—'}</span></td>
+            <td><span class="badge badge-cyan">${s.clubDept || '—'}</span></td>
             <td class="text-muted">${s.email || '—'}</td>
             <td>${s.department || '—'}</td>
-            <td>${s.registrationYear || '—'}</td>
+            <td>${s.departmentRole || '—'}</td>
             <td style="display:flex;gap:6px;">
                 <button class="btn btn-outline" style="padding:5px 10px;font-size:11px;" onclick="editStudent(${s.id})"><i class="fa-solid fa-pen"></i></button>
                 <button class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteStudent(${s.id})"><i class="fa-solid fa-trash"></i></button>
@@ -42,8 +42,8 @@ function filterStudents() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const dept = document.getElementById('deptFilter').value;
     let filtered = allStudents.filter(s => {
-        const match = !q || (s.fullName || '').toLowerCase().includes(q) || (s.rollNumber || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q);
-        const deptMatch = !dept || s.department === dept;
+        const match = !q || (s.fullName || '').toLowerCase().includes(q) || (s.clubDept || '').toLowerCase().includes(q) || (s.email || '').toLowerCase().includes(q);
+        const deptMatch = !dept || s.clubDept === dept;
         return match && deptMatch;
     });
     renderTable(filtered);
@@ -55,7 +55,7 @@ function openModal(id = null) {
     document.getElementById('studentForm').reset();
     if (id) {
         const s = allStudents.find(x => x.id === id);
-        if (s) { document.getElementById('fullName').value = s.fullName; document.getElementById('email').value = s.email; document.getElementById('rollNumber').value = s.rollNumber; document.getElementById('department').value = s.department; document.getElementById('registrationYear').value = s.registrationYear; document.getElementById('phoneNumber').value = s.phoneNumber; }
+        if (s) { document.getElementById('fullName').value = s.fullName; document.getElementById('email').value = s.email; document.getElementById('clubDept').value = s.clubDept; document.getElementById('department').value = s.department; document.getElementById('departmentRole').value = s.departmentRole; document.getElementById('phoneNumber').value = s.phoneNumber; }
     }
     document.getElementById('studentModal').classList.add('active');
 }
@@ -65,12 +65,13 @@ document.getElementById('studentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fullName = document.getElementById('fullName').value.trim();
     const email = document.getElementById('email').value.trim();
-    const rollNumber = document.getElementById('rollNumber').value.trim();
+    const clubDept = document.getElementById('clubDept').value.trim();
     const department = document.getElementById('department').value;
-    const registrationYear = document.getElementById('registrationYear').value;
+    const departmentRole = document.getElementById('departmentRole').value;
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
     // Validation
-    if (!fullName || !email || !rollNumber || !department) {
+    if (!fullName || !email || !clubDept || !department || !phoneNumber) {
         API.showToast('Please fill in all required fields.', 'error');
         return;
     }
@@ -80,12 +81,17 @@ document.getElementById('studentForm').addEventListener('submit', async (e) => {
         return;
     }
 
+    if (phoneNumber.length !== 10 || isNaN(phoneNumber)) {
+        API.showToast('Please enter a valid 10-digit phone number.', 'error');
+        return;
+    }
+
     const payload = { 
         fullName, 
         email, 
-        rollNumber, 
+        clubDept, 
         department, 
-        registrationYear: parseInt(registrationYear) || null, 
+        departmentRole, 
         phoneNumber: document.getElementById('phoneNumber').value.trim() 
     };
 

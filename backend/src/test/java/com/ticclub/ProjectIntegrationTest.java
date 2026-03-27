@@ -66,9 +66,9 @@ public class ProjectIntegrationTest {
         Student student = Student.builder()
                 .fullName("Test Student")
                 .email("test@student.com")
-                .rollNumber("TS001")
+                .clubDept("Technical")
                 .department("Computer Engineering")
-                .registrationYear(2024)
+                .departmentRole("Member")
                 .build();
 
         // Create
@@ -77,7 +77,7 @@ public class ProjectIntegrationTest {
                 .content(objectMapper.writeValueAsString(student)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName", is("Test Student")))
-                .andExpect(jsonPath("$.registrationYear", is(2024)));
+                .andExpect(jsonPath("$.departmentRole", is("Member")));
 
         // Read
         mockMvc.perform(get("/api/students"))
@@ -136,7 +136,7 @@ public class ProjectIntegrationTest {
         Student student = studentRepository.save(Student.builder()
                 .fullName("Att Student")
                 .email("att@student.com")
-                .rollNumber("ATT001")
+                .clubDept("Editorial")
                 .build());
         Event event = eventRepository.save(Event.builder()
                 .title("Att Event")
@@ -169,7 +169,7 @@ public class ProjectIntegrationTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testTeamCRUD() throws Exception {
-        Student s1 = studentRepository.save(Student.builder().fullName("S1").email("s1@e.com").rollNumber("R1").build());
+        Student s1 = studentRepository.save(Student.builder().fullName("S1").email("s1@e.com").clubDept("R1").build());
         
         TeamRequest teamRequest = new TeamRequest("Test Team", "Description", List.of(s1.getId()));
 

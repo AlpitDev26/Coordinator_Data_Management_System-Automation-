@@ -20,7 +20,7 @@ async function loadStudents() {
         const students = await API.request('/students');
         allStudentsCount = students.length;
         const sel = document.getElementById('markStudent');
-        students.forEach(s => sel.appendChild(new Option(s.fullName + ' (' + s.rollNumber + ')', s.id)));
+        students.forEach(s => sel.appendChild(new Option(s.fullName + ' (' + s.clubDept + ')', s.id)));
     } catch (e) { console.error(e); }
 }
 
@@ -63,7 +63,7 @@ async function loadAttendance() {
             return `<tr>
                 <td class="text-muted">${i + 1}</td>
                 <td><strong>${r.studentName || '—'}</strong></td>
-                <td class="text-cyan">${r.studentRollNumber || '—'}</td>
+                <td class="text-cyan">${r.studentClubDept || '—'}</td>
                 <td>${r.eventTitle || '—'}</td>
                 <td><span class="badge ${badgeClass}">${r.status}</span></td>
                 <td class="text-muted">${r.recordedAt ? new Date(r.recordedAt).toLocaleString() : '—'}</td>

@@ -67,21 +67,42 @@ function renderTable(teams) {
         </tr>`).join('');
 }
 
-function renderStudentCheckboxes() {
+function renderStudentCheckboxes(currentTeamMemberIds = []) {
     const container = document.getElementById('studentCheckboxes');
     if (!allStudents.length) {
         container.innerHTML = '<div style="font-size:12px;color:var(--text3); text-align:center; padding:10px;">No students registered yet</div>';
         return;
     }
-    container.innerHTML = allStudents.map(s => `
-        <label style="display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer; font-size:13px; padding:8px; border-radius:4px; transition: background 0.2s;" class="student-label-hover">
-            <input type="checkbox" name="members" value="${s.id}" style="width:16px; height:16px; accent-color:var(--cyan);">
-            <div style="display:flex; flex-direction:column;">
-                <span style="font-weight:500;">${s.fullName}</span>
-                <span style="font-size:11px; color:var(--text3);">${s.rollNumber} • ${s.department}</span>
-            </div>
-        </label>
-    `).join('');
+
+    // Get all student IDs already in OTHER teams
+    const allBusyIds = [];
+    allTeams.forEach(t => {
+        if (editingId && t.id === editingId) return; // Skip current team
+        if (t.members) {
+            t.members.forEach(m => allBusyIds.push(m.id));
+        }
+    });
+
+    container.innerHTML = allStudents.map(s => {
+        const isInOtherTeam = allBusyIds.includes(s.id);
+        const isCurrentlyInTeam = currentTeamMemberIds.includes(s.id);
+
+        if (isInOtherTeam) return ''; // Hide students already in other teams
+
+        return `
+            <label style="display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer; font-size:13px; padding:8px; border-radius:4px; transition: background 0.2s;" class="student-label-hover">
+                <input type="checkbox" name="members" value="${s.id}" ${isCurrentlyInTeam ? 'checked' : ''} style="width:16px; height:16px; accent-color:var(--cyan);">
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-weight:500;">${s.fullName}</span>
+                    <span style="font-size:11px; color:var(--text3);">${s.clubDept} • ${s.department}</span>
+                </div>
+            </label>
+        `;
+    }).join('');
+    
+    if (!container.innerHTML.trim()) {
+        container.innerHTML = '<div style="font-size:12px;color:var(--text3); text-align:center; padding:10px;">No available students</div>';
+    }
 }
 
 function openModal(id = null) {
@@ -89,20 +110,17 @@ function openModal(id = null) {
     document.getElementById('modalTitle').textContent = id ? 'EDIT TEAM' : 'CREATE TEAM';
     document.getElementById('teamForm').reset();
     
-    // Clear all checkboxes
-    document.querySelectorAll('input[name="members"]').forEach(c => c.checked = false);
-
+    let currentMemberIds = [];
     if (id) {
         const t = allTeams.find(x => x.id === id);
         if (t) {
             document.getElementById('teamName').value = t.name;
             document.getElementById('description').value = t.description || '';
-            const memberIds = t.members ? t.members.map(m => m.id) : [];
-            document.querySelectorAll('input[name="members"]').forEach(c => {
-                c.checked = memberIds.includes(parseInt(c.value));
-            });
+            currentMemberIds = t.members ? t.members.map(m => m.id) : [];
         }
     }
+
+    renderStudentCheckboxes(currentMemberIds);
     document.getElementById('teamModal').classList.add('active');
 }
 

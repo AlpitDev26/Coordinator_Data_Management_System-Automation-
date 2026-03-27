@@ -29,9 +29,6 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
-        if (studentRepository.existsByRollNumber(student.getRollNumber())) {
-            throw new IllegalArgumentException("Student with roll number " + student.getRollNumber() + " already exists.");
-        }
         if (studentRepository.existsByEmail(student.getEmail())) {
             throw new IllegalArgumentException("Student with email " + student.getEmail() + " already exists.");
         }
@@ -42,9 +39,9 @@ public class StudentService {
         Student student = getStudentById(id);
         student.setFullName(studentDetails.getFullName());
         student.setEmail(studentDetails.getEmail());
-        student.setRollNumber(studentDetails.getRollNumber());
+        student.setClubDept(studentDetails.getClubDept());
         student.setDepartment(studentDetails.getDepartment());
-        student.setRegistrationYear(studentDetails.getRegistrationYear());
+        student.setDepartmentRole(studentDetails.getDepartmentRole());
         student.setPhoneNumber(studentDetails.getPhoneNumber());
         return studentRepository.save(student);
     }

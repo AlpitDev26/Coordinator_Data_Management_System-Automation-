@@ -26,15 +26,16 @@ public class Student {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
-    private String rollNumber;
+    @Column(nullable = false)
+    private String clubDept;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     private String department;
     
-    private Integer registrationYear;
+    @Column(name = "dept_role")
+    private String departmentRole;
 
     private String phoneNumber;
 

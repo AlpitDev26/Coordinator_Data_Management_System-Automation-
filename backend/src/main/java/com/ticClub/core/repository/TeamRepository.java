@@ -17,4 +17,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Modifying
     @Query(value = "DELETE FROM team_members WHERE student_id = :studentId", nativeQuery = true)
     void removeStudentFromAllTeams(@Param("studentId") Long studentId);
+
+    @Query(value = "SELECT student_id FROM team_members WHERE team_id <> :excludeTeamId", nativeQuery = true)
+    java.util.List<Long> findStudentIdsInOtherTeams(@Param("excludeTeamId") Long excludeTeamId);
+
+    @Query(value = "SELECT student_id FROM team_members", nativeQuery = true)
+    java.util.List<Long> findAllStudentIdsInTeams();
 }
