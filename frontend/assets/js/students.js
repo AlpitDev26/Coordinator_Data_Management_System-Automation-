@@ -26,11 +26,11 @@ function renderTable(students) {
     body.innerHTML = students.map((s, i) => `
         <tr>
             <td class="text-muted" style="font-size:12px;">${i + 1}</td>
-            <td><strong>${s.fullName || '—'}</strong></td>
+            <td><strong>${s.fullName || '—'}</strong><br><small class="text-muted">${s.email || '—'}</small></td>
+            <td><span class="text-cyan">${s.department || '—'}</span></td>
             <td><span class="badge badge-cyan">${s.clubDept || '—'}</span></td>
-            <td class="text-muted">${s.email || '—'}</td>
-            <td>${s.department || '—'}</td>
-            <td>${s.departmentRole || '—'}</td>
+            <td><span class="badge badge-purple">${s.departmentRole || 'Member'}</span></td>
+            <td><i class="fa-solid fa-phone" style="font-size:10px;margin-right:5px;opacity:0.5;"></i> ${s.phoneNumber || '—'}</td>
             <td style="display:flex;gap:6px;">
                 <button class="btn btn-outline" style="padding:5px 10px;font-size:11px;" onclick="editStudent(${s.id})"><i class="fa-solid fa-pen"></i></button>
                 <button class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteStudent(${s.id})"><i class="fa-solid fa-trash"></i></button>
